@@ -288,16 +288,16 @@ class LivySessionOperator(BaseOperator):
             logging.info("Session {session_id} is ready to accept statements.".format(session_id=self.session_id))
             for i, statement in enumerate(self.statements):
                 logging.info(
-                    "Submitting statement {i+1}/{len(statements)} "
+                    "Submitting statement {num}/{count} "
                     "in session {session_id}..."
-                        .format(statements=self.statements, session_id=self.session_id)
+                        .format(num=i+1, count=len(self.statements), session_id=self.session_id)
                 )
                 statement_id = self.submit_statement(statement)
                 logging.info(
-                    "Statement {i+1}/{len(statements)} "
+                    "Statement {num}/{count} "
                     "(session {session_id}) "
                     "has been submitted with id {statement_id}"
-                        .format(statements=self.statements, session_id=self.session_id, statement_id=statement_id)
+                        .format(num=i+1, count=len(self.statements), session_id=self.session_id, statement_id=statement_id)
                 )
                 LivyStatementSensor(
                     self.session_id,
@@ -308,9 +308,9 @@ class LivySessionOperator(BaseOperator):
                     timeout=self.statemt_timeout_minutes * 60,
                 ).execute(context)
             logging.info(
-                "All {len(statements)} statements in session {session_id} "
+                "All {count} statements in session {session_id} "
                 "completed successfully!"
-                    .format(statements=self.statements, session_id=self.session_id)
+                    .format(count=len(self.statements), session_id=self.session_id)
             )
         except Exception:
             if self.session_id is not None:
@@ -418,6 +418,7 @@ class LivySessionOperator(BaseOperator):
 
     def close_session(self):
         logging.info("Closing session with id = {session_id}".format(session_id=self.session_id))
+        headers = {"X-Requested-By": "airflow"}
         session_endpoint = "{ENDPOINT}/{session_id}".format(ENDPOINT=ENDPOINT, session_id=self.session_id)
-        HttpHook(method="DELETE", http_conn_id=self.http_conn_id).run(session_endpoint)
+        HttpHook(method="DELETE", http_conn_id=self.http_conn_id).run(session_endpoint, headers=headers)
         logging.info("Session {session_id} has been closed".format(session_id=self.session_id))
