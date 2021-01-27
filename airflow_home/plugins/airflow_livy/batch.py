@@ -259,7 +259,7 @@ class LivyBatchOperator(BaseOperator):
             self.check_spark_app_status(app_id)
         else:
             self.check_yarn_app_status(app_id)
-        logging.info("App '{app_id}' associated with batch {self.batch_id} completed!"
+        logging.info("App '{app_id}' associated with batch {batch_id} completed!"
                      .format(app_id=app_id, batch_id=self.batch_id))
 
     def get_spark_app_id(self, batch_id):
@@ -288,7 +288,7 @@ class LivyBatchOperator(BaseOperator):
                 job_status = job["status"]
                 logging.info(
                     "Job id {job_id} associated with application '{app_id}' "
-                    "is '{job_status}'".format(app_id=app_id, job_status=job_status)
+                    "is '{job_status}'".format(job_id=job_id, app_id=app_id, job_status=job_status)
                 )
                 if job_status != expected_status:
                     raise AirflowException(

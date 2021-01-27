@@ -5,7 +5,7 @@ with open("README.md") as fh:
 
 setup(
     name="airflow-livy-operators-sexy",
-    version="0.3.1",
+    version="0.3.2",
     author="Sergei Sheremeta",
     author_email="s.w.sheremeta@gmail.com",
     description="Lets Airflow DAGs run Spark jobs via Livy: sessions and/or batches. Forked from panovvv/airflow-livy-operators and changed python to 3.5",
